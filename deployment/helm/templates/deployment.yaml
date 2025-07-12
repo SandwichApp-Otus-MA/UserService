@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    name: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      name: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include "propertiesHash" . }}
+        app_version: "{{ .Chart.AppVersion }}"
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - mountPath: /dumps
+              name: heap-dumps
+          startupProbe:
+{{ toYaml .Values.startupProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 12 }}
+          livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 12 }}
+          lifecycle:
+{{ toYaml .Values.lifecycle | indent 12 }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- if .Values.configmap }}
+{{- $release := .Release.Name }}
+          env:
+          {{- range $key, $val := .Values.configmap }}
+            - name: {{ $key }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{$release}}
+                  key: {{ $key }}
+          {{- end }}
+          {{- range $key, $val := .Values.secrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $val }}
+                  key: password
+          {{- end }}
+{{- end }}
+      volumes:
+        - name: heap-dumps
+          emptyDir: { }
+{{- if .Values.hosts }}
+      hostAliases:
+      {{- $ips := values .Values.hosts | uniq }}
+      {{- range $ips }}
+      {{- $ip_r := . }}
+        - ip: {{ . }}
+          hostnames:
+        {{- range $host, $ip := $.Values.hosts }}
+          {{- if eq $ip $ip_r }}
+            - {{ $host | quote }}
+          {{- end}}
+        {{- end}}
+      {{- end}}
+{{- end}}
