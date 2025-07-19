@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-namespace: dev
+namespace: default
 
 replicaCount: 1
 
@@ -45,8 +45,7 @@ resources:
 service:
   port: 8080
   targetPort: 8080
-  nodePort: 30004
-  type: NodePort
+  type: ClusterIP
 
 ingress:
   host: "arch.homework"
@@ -56,7 +55,7 @@ ingress:
 
 configmap:
   SPRING_DATASOURCE_USERNAME: "postgres"
-  SPRING_DATASOURCE_URL: "jdbc:postgresql://localhost:{{ .Values.db_port | default 5432 }}/user-service"
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-k-postgresql:{{ .Values.db_port | default 5432 }}/user-service"
 
 secrets:
   SPRING_DATASOURCE_PASSWORD: "postgres-pswd"

@@ -12,9 +12,5 @@ spec:
       protocol: TCP
       port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.targetPort | default 8080 }}
-{{- if .Values.service.nodePort }}
-      nodePort: {{ .Values.service.nodePort }}
-  type: NodePort
-{{- end }}
   selector:
     app: {{ .Release.Name }}

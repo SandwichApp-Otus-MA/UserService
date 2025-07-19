@@ -51,24 +51,10 @@ spec:
             - name: {{ $key }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ $val }}
-                  key: password
+                  name: {{$release}}-secret
+                  key: postgres-pswd
           {{- end }}
 {{- end }}
       volumes:
         - name: heap-dumps
           emptyDir: { }
-{{- if .Values.hosts }}
-      hostAliases:
-      {{- $ips := values .Values.hosts | uniq }}
-      {{- range $ips }}
-      {{- $ip_r := . }}
-        - ip: {{ . }}
-          hostnames:
-        {{- range $host, $ip := $.Values.hosts }}
-          {{- if eq $ip $ip_r }}
-            - {{ $host | quote }}
-          {{- end}}
-        {{- end}}
-      {{- end}}
-{{- end}}
