@@ -5,6 +5,7 @@ metadata:
   namespace: {{ .Values.namespace }}
   labels:
     name: {{ .Release.Name }}
+    app: {{ .Release.Name }}
 spec:
   type: {{ .Values.service.type }}
   ports:
