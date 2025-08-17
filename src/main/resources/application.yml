@@ -2,10 +2,13 @@ spring:
   application:
     name: user-service
   config:
-    import: db.yml
+    import:
+      - db.yml
+      - ssl.yml
+      - security.yml
 
 server:
-  port: 8080
+  port: 8081
 
 logging:
   level:

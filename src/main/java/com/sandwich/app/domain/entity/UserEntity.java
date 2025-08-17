@@ -1,6 +1,7 @@
 package com.sandwich.app.domain.entity;
 
 
+import com.sandwich.app.domain.dto.auth.UserRole;
 import com.sandwich.app.domain.dto.enums.UserStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,6 +17,8 @@ import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -41,11 +44,17 @@ public class UserEntity extends DomainObject {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
+    @Column(unique = true)
     private String email;
 
-    @Column(name = "phone_number")
+    private String password;
+
+    @Column(name = "phone_number", unique = true)
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     private UserStatus status;
+
+    @Enumerated(EnumType.STRING)
+    private Set<UserRole> roles = new HashSet<>();
 }

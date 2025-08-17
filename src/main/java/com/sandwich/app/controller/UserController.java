@@ -6,6 +6,7 @@ import com.sandwich.app.domain.dto.user.UserSearchRequest;
 import com.sandwich.app.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -37,6 +39,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getAll(request));
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/create")
     public ResponseEntity<UUID> create(@Valid @RequestBody UserDto user) {
         return ResponseEntity.ok(userService.create(user));

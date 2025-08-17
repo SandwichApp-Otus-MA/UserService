@@ -2,15 +2,32 @@ package com.sandwich.app.mapper;
 
 import com.sandwich.app.domain.dto.user.UserDto;
 import com.sandwich.app.domain.entity.UserEntity;
+import lombok.Setter;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.nio.CharBuffer;
 
 @Mapper
-public interface UserMapper {
+public abstract class UserMapper {
 
-    UserDto convert(UserEntity entity);
+    @Setter(onMethod = @__(@Autowired))
+    private PasswordEncoder passwordEncoder;
+
+    @Mapping(target = "password", ignore = true)
+    public abstract UserDto convert(UserEntity entity);
 
     @Mapping(target = "id", ignore = true)
-    UserEntity convert(@MappingTarget UserEntity entity, UserDto dto);
+    @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "password", qualifiedByName = "passwordHash")
+    public abstract UserEntity convert(@MappingTarget UserEntity entity, UserDto dto);
+
+    @Named("passwordHash")
+    protected String passwordHash(char[] password) {
+        return passwordEncoder.encode(CharBuffer.wrap(password));
+    }
 }

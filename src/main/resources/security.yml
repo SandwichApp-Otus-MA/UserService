@@ -1,0 +1,13 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${USER_SERVICE_URL:http://localhost:8081}
+          jwk-set-uri: ${USER_SERVICE_URL:http://localhost:8081}/oauth2/jwks
+
+security:
+  jwt:
+    public-secret: ${JWT_PUBLIC_SECRET:}
+    private-secret: ${JWT_PRIVATE_SECRET:}
+    expiration-ms: ${JWT_EXPIRATION_MS:PT30m}

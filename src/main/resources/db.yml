@@ -10,6 +10,9 @@ spring:
         default_schema: ${DATASOURCE_SCHEMA_NAME:public}
         jdbc:
           time_zone: UTC
+          batch_size: 50
+          order_inserts: true
+          order_updates: true
         query:
           fail_on_pagination_over_collection_fetch: true
           in_clause_parameter_padding: true
@@ -18,6 +21,8 @@ spring:
     username: ${DATASOURCE_USERNAME:postgres}
     password: ${DATASOURCE_PASSWORD:postgres_secret}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
   liquibase:
     change-log: classpath:db/migration/changelog-master.xml
     default-schema: ${DATASOURCE_SCHEMA_NAME:public}

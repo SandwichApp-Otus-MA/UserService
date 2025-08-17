@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<UserEntity, UUID>,
@@ -17,4 +18,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID>,
     @Modifying
     @Query("delete from UserEntity where id = :uuid")
     void deleteById(UUID uuid);
+
+    @Query("select u from UserEntity u where u.email = :login or u.phoneNumber = :login")
+    Optional<UserEntity> findByEmailOrPhoneNumber(String login);
 }

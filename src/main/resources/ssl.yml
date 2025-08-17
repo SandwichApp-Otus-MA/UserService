@@ -1,0 +1,15 @@
+spring:
+  config:
+    activate:
+      on-profile: ssl
+  ssl:
+    bundle:
+      jks:
+#        todo: реализовать позже
+        rest:
+          truststore:
+            location: ${REST_CLIENT_TRUSTSTORE_LOCATION:/certs/truststore.pfx}
+            password: ${REST_CLIENT_TRUSTSTORE_PASS}
+          keystore:
+            location: ${REST_CLIENT_KEYSTORE_LOCATION:/certs/keystore.pfx}
+            password: ${REST_CLIENT_KEYSTORE_PASS}
