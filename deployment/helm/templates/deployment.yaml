@@ -5,6 +5,7 @@ metadata:
   namespace: {{ .Values.namespace }}
   labels:
     name: {{ .Release.Name }}
+    app: {{ .Release.Name }}
 spec:
   replicas: 3
   selector:
@@ -52,7 +53,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{$release}}-secret
-                  key: postgres-pswd
+                  key: {{ $val }}
           {{- end }}
 {{- end }}
       volumes:

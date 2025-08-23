@@ -56,7 +56,9 @@ ingress:
 configmap:
   SPRING_DATASOURCE_USERNAME: "postgres"
   SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-k-postgresql:{{ .Values.db_port | default 5432 }}/user-service"
-
+  USER_SERVICE_URL: "http://user-service"
 secrets:
+  JWT_PUBLIC_SECRET: "jwt-public"
+  JWT_PRIVATE_SECRET: "jwt-secret"
   SPRING_DATASOURCE_PASSWORD: "postgres-pswd"
 existingSecret: "sandwich-secret"
