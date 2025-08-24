@@ -5,16 +5,17 @@ import static com.sandwich.app.utils.PageUtil.createPageable;
 import static com.sandwich.app.utils.PageUtil.createSort;
 
 import com.sandwich.app.domain.dto.auth.UserRole;
+import com.sandwich.app.domain.dto.billing.UserAccountDto;
 import com.sandwich.app.domain.dto.pagination.PageData;
 import com.sandwich.app.domain.dto.user.UserDto;
 import com.sandwich.app.domain.dto.user.UserSearchRequest;
 import com.sandwich.app.domain.entity.UserEntity;
 import com.sandwich.app.domain.repository.UserRepository;
+import com.sandwich.app.integration.BillingService;
 import com.sandwich.app.mapper.UserMapper;
 import com.sandwich.app.query.builder.UserQueryBuilder;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +33,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserQueryBuilder queryBuilder;
     private final UserMapper userMapper;
+
+    private final BillingService billingService;
 
     @Transactional(readOnly = true)
     public UserDto get(UUID id) {
@@ -67,7 +71,13 @@ public class UserService {
         var newUser = new UserEntity()
             .setRoles(Set.of(UserRole.CLIENT));
         userMapper.convert(newUser, user);
-        return userRepository.save(newUser).getId();
+        var saveUser = userRepository.save(newUser);
+
+        billingService.create(new UserAccountDto()
+            .setUserId(newUser.getId())
+            .setBalance(user.getBalance()));
+
+        return saveUser.getId();
     }
 
     @Transactional
@@ -88,7 +98,15 @@ public class UserService {
 
     private void validation(UserDto user) {
         if (Strings.isBlank(user.getEmail()) && Strings.isBlank(user.getPhoneNumber())) {
-            throw new IllegalArgumentException("Обазятельно нужно указать email или номер телефона!");
+            throw new IllegalArgumentException("Обязательно нужно указать email или номер телефона!");
+        }
+
+        var raws = Stream.of(user.getEmail(), user.getPhoneNumber())
+            .filter(Strings::isNotBlank)
+            .toList();
+
+        if (userRepository.existWithEmailOrPhoneNumber(raws)) {
+            throw new IllegalArgumentException("Пользователь с таким email или номером телефона уже существует!");
         }
     }
 }

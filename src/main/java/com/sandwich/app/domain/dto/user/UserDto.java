@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -36,4 +37,6 @@ public class UserDto {
     @Size(min = 12, max = 50)
     private char[] password;
     private UserStatus status;
+    @NotNull
+    private BigDecimal balance = BigDecimal.ZERO;
 }
