@@ -3,8 +3,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${USER_SERVICE_URL:http://localhost:8080}
-          jwk-set-uri: ${USER_SERVICE_URL:http://localhost:8080}/oauth2/jwks
+          issuer-uri: ${USER_SERVICE_URL:http://localhost:8084}
+          jwk-set-uri: ${USER_SERVICE_URL:http://localhost:8084}/oauth2/jwks
 
 security:
   jwt:

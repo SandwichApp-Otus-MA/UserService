@@ -14,7 +14,7 @@ public class BillingService {
     private final BillingClient billingClient;
 
     public void create(UserAccountDto userAccountDto) {
-        log.info("Создание нового акканута для userId: {}", userAccountDto.getUserId());
+        log.info("Создание нового аккаунта для userId: {}", userAccountDto.getUserId());
         billingClient.create(userAccountDto);
     }
 }

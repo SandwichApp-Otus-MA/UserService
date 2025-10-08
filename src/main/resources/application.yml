@@ -9,7 +9,7 @@ spring:
       - rest.yml
 
 server:
-  port: 8080
+  port: 8084
 
 logging:
   level:
