@@ -47,16 +47,11 @@ service:
   targetPort: 8080
   type: ClusterIP
 
-ingress:
-  host: "arch.homework"
-  path: "/user-service/"
-  annotations:
-    nginx.org/rewrites: "serviceName=user-service rewrite=/"
-
 configmap:
   SPRING_DATASOURCE_USERNAME: "postgres"
   SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-k-postgresql:{{ .Values.db_port | default 5432 }}/user-service"
-  USER_SERVICE_URL: "http://user-service"
+  USER_SERVICE_URL: "http://user-service.default.svc.cluster.local:8080"
+  BILLING_SERVICE_URL: "http://billing-service.default.svc.cluster.local:8080"
   SERVER_PORT: 8080
 secrets:
   JWT_PUBLIC_SECRET: "jwt-public"

@@ -41,6 +41,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtDecoder jwtDecoder) throws Exception {
         return http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/oauth2/jwks").permitAll()
                 .requestMatchers(HttpMethod.POST, "/login").anonymous()
                 .requestMatchers(HttpMethod.POST, "/v1/user/create").anonymous()
